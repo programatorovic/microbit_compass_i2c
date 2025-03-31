@@ -21,13 +21,15 @@ namespace compass_i2c {
         return 0;
     }
 
-    // Calibrate QMC5883L
+// Calibrate QMC5883L
     //% block="Calibrate QMC5883L"
     export function calibrateQMC5883L(): void {
         let xMin = 32767, xMax = -32768;
         let yMin = 32767, yMax = -32768;
         let zMin = 32767, zMax = -32768;
         let coveredDots = [false, false, false, false, false];
+
+        basic.showString("CAL");
 
         for (let i = 0; i < 1000; i++) {
             let x = getX();
@@ -61,6 +63,7 @@ namespace compass_i2c {
         yOffset = (yMax + yMin) / 2;
         zOffset = (zMax + zMin) / 2;
         basic.clearScreen();
+        basic.showString("DONE");
     }
 
     // Get X value
