@@ -21,12 +21,13 @@ namespace compass_i2c {
         return 0;
     }
 
-// Calibrate QMC5883L
+    // Calibrate QMC5883L
     //% block="Calibrate QMC5883L"
     export function calibrateQMC5883L(): void {
         let xMin = 32767, xMax = -32768;
         let yMin = 32767, yMax = -32768;
         let zMin = 32767, zMax = -32768;
+        let coveredDots = [false, false, false, false, false];
 
         for (let i = 0; i < 1000; i++) {
             let x = getX();
@@ -45,9 +46,15 @@ namespace compass_i2c {
             basic.clearScreen();
             for (let j = 0; j <= displayPattern; j++) {
                 led.plot(j, displayPattern - j);
+                coveredDots[displayPattern] = true;
             }
 
-            basic.pause(10); // Add a delay of 10 milliseconds
+            // Check if all dots are covered
+            if (coveredDots.every(dot => dot)) {
+                break;
+            }
+
+            basic.pause(50); // Add a delay of 50 milliseconds
         }
 
         xOffset = (xMax + xMin) / 2;
