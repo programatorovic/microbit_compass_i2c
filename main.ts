@@ -5,13 +5,15 @@ namespace compass_i2c {
     // Initialize QMC5883L
     //% block="Init QMC5883L"
     export function initQMC5883L(): number {
-        let buf = pins.createBuffer(1);
-        buf[0] = 0x0D; // Register to read
+        let buf = pins.createBuffer(2);
+        buf[0] = 0x0B; // Control register 2
+        buf[1] = 0x01; // Soft reset
         pins.i2cWriteBuffer(QMC5883L_ADDRESS, buf);
-        let result = pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.UInt8BE);
-        if (result != 0xFF) { // 0xFF is the ID for QMC5883L
-            return -1;
-        }
+
+        buf[0] = 0x09; // Control register 1
+        buf[1] = 0x1D; // Continuous measurement mode, 200Hz output rate, 2G range, 8x oversampling
+        pins.i2cWriteBuffer(QMC5883L_ADDRESS, buf);
+
         return 0;
     }
 
