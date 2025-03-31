@@ -2,7 +2,9 @@
 namespace compass_i2c {
     const QMC5883L_ADDRESS = 0x0D;
     let referenceAzimuth = 0;
-
+    let xOffset = 0;
+    let yOffset = 0;
+    let zOffset = 0;
 
     // Initialize QMC5883L
     //% block="Init QMC5883L"
@@ -19,13 +21,38 @@ namespace compass_i2c {
         return 0;
     }
 
+    // Calibrate QMC5883L
+    //% block="Calibrate QMC5883L"
+    export function calibrateQMC5883L(): void {
+        let xMin = 32767, xMax = -32768;
+        let yMin = 32767, yMax = -32768;
+        let zMin = 32767, zMax = -32768;
+
+        for (let i = 0; i < 1000; i++) {
+            let x = getX();
+            let y = getY();
+            let z = getZ();
+
+            if (x < xMin) xMin = x;
+            if (x > xMax) xMax = x;
+            if (y < yMin) yMin = y;
+            if (y > yMax) yMax = y;
+            if (z < zMin) zMin = z;
+            if (z > zMax) zMax = z;
+        }
+
+        xOffset = (xMax + xMin) / 2;
+        yOffset = (yMax + yMin) / 2;
+        zOffset = (zMax + zMin) / 2;
+    }
+
     // Get X value
     //% block="Get X"
     export function getX(): number {
         let buf = pins.createBuffer(1);
         buf[0] = 0x00; // Register to read X value
         pins.i2cWriteBuffer(QMC5883L_ADDRESS, buf);
-        return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE);
+        return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE) - xOffset;
     }
 
     // Get Y value
@@ -34,7 +61,7 @@ namespace compass_i2c {
         let buf = pins.createBuffer(1);
         buf[0] = 0x02; // Register to read Y value
         pins.i2cWriteBuffer(QMC5883L_ADDRESS, buf);
-        return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE);
+        return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE) - yOffset;
     }
 
     // Get Z value
@@ -43,10 +70,10 @@ namespace compass_i2c {
         let buf = pins.createBuffer(1);
         buf[0] = 0x04; // Register to read Z value
         pins.i2cWriteBuffer(QMC5883L_ADDRESS, buf);
-        return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE);
+        return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE) - zOffset;
     }
 
-// Calculate Azimuth
+    // Calculate Azimuth
     //% block="Azimuth"
     export function azimuth(): number {
         let x = getX();
@@ -79,7 +106,6 @@ namespace compass_i2c {
         } else if (relativeAzimuth < -180) {
             relativeAzimuth += 360;
         }
-        return -relativeAzimuth; // neg sign.
+        return -relativeAzimuth;  // neg sign.
     }
-
 }
