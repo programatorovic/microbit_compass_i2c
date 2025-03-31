@@ -1,4 +1,4 @@
-// main.ts
+//% weight=100 color=#0fbc11 icon="\uf14e" block="compass i2c"
 namespace compass_i2c {
     const HMC5883L_ADDRESS = 0x0D;
     const QMC5883L_ADDRESS = 0x0D;
