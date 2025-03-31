@@ -21,7 +21,7 @@ namespace compass_i2c {
         return 0;
     }
 
-    // Calibrate QMC5883L
+// Calibrate QMC5883L
     //% block="Calibrate QMC5883L"
     export function calibrateQMC5883L(): void {
         let xMin = 32767, xMax = -32768;
@@ -39,11 +39,21 @@ namespace compass_i2c {
             if (y > yMax) yMax = y;
             if (z < zMin) zMin = z;
             if (z > zMax) zMax = z;
+
+            // Display dots on the micro:bit screen
+            let displayPattern = i % 5;
+            basic.clearScreen();
+            for (let j = 0; j <= displayPattern; j++) {
+                led.plot(j, displayPattern - j);
+            }
+
+            basic.pause(10); // Add a delay of 10 milliseconds
         }
 
         xOffset = (xMax + xMin) / 2;
         yOffset = (yMax + yMin) / 2;
         zOffset = (zMax + zMin) / 2;
+        basic.clearScreen();
     }
 
     // Get X value
