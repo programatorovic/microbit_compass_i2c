@@ -74,7 +74,7 @@ namespace compass_i2c {
         } else if (relativeAzimuth < -180) {
             relativeAzimuth += 360;
         }
-        return relativeAzimuth;
+        return -relativeAzimuth; // neg sign.
     }
- 
+
 }
