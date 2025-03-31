@@ -46,7 +46,7 @@ namespace compass_i2c {
         return pins.i2cReadNumber(QMC5883L_ADDRESS, NumberFormat.Int16LE);
     }
 
-    // Calculate Azimuth
+// Calculate Azimuth
     //% block="Azimuth"
     export function azimuth(): number {
         let x = getX();
@@ -55,7 +55,7 @@ namespace compass_i2c {
         let pitch = Math.atan2(-x, Math.sqrt(y * y + z * z));
         let roll = Math.atan2(y, z);
         let xh = x * Math.cos(pitch) + z * Math.sin(pitch);
-        let yh = x * Math.sin(roll) * Math.sin(pitch) + y * Math.cos(roll) - z * Math.sin(roll) * Math.cos(pitch);
+        let yh = y * Math.cos(roll) - z * Math.sin(roll);
         let azimuth = Math.atan2(yh, xh) * (180 / Math.PI);
         if (azimuth < 0) {
             azimuth += 360;
