@@ -47,17 +47,22 @@ namespace compass_i2c {
     }
 
     // Calculate Azimuth
-    //% block="Azimuth"
-    export function azimuth(): number {
-        let x = getX();
-        let y = getY();
-        let azimuth = Math.atan2(y, x) * (180 / Math.PI);
-        if (azimuth < 0) {
-            azimuth += 360;
+        //% block="Azimuth"
+        export function azimuth(): number {
+            let x = getX();
+            let y = getY();
+            let z = getZ();
+            let pitch = Math.atan2(-x, Math.sqrt(y * y + z * z));
+            let roll = Math.atan2(y, z);
+            let xh = x * Math.cos(pitch) + z * Math.sin(pitch);
+            let yh = x * Math.sin(roll) * Math.sin(pitch) + y * Math.cos(roll) - z * Math.sin(roll) * Math.cos(pitch);
+            let azimuth = Math.atan2(yh, xh) * (180 / Math.PI);
+            if (azimuth < 0) {
+                azimuth += 360;
+            }
+            return Math.round(azimuth);
         }
-        return Math.round(azimuth);
-    }
-
+        
     // Set Reference Azimuth
     //% block="Set Azimuth %angle"
     export function setAzimuth(angle: number): void {
