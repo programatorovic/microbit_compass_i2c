@@ -1,6 +1,8 @@
 //% weight=100 color=#0fbc11 icon="\uf14e" block="compass i2c"
 namespace compass_i2c {
     const QMC5883L_ADDRESS = 0x0D;
+    let referenceAzimuth = 0;
+
 
     // Initialize QMC5883L
     //% block="Init QMC5883L"
@@ -55,4 +57,24 @@ namespace compass_i2c {
         }
         return Math.round(azimuth);
     }
+
+    // Set Reference Azimuth
+    //% block="Set Azimuth %angle"
+    export function setAzimuth(angle: number): void {
+        referenceAzimuth = angle;
+    }
+
+    // Calculate Relative Azimuth
+    //% block="Relative Azimuth"
+    export function relativeAzimuth(): number {
+        let currentAzimuth = azimuth();
+        let relativeAzimuth = currentAzimuth - referenceAzimuth;
+        if (relativeAzimuth > 180) {
+            relativeAzimuth -= 360;
+        } else if (relativeAzimuth < -180) {
+            relativeAzimuth += 360;
+        }
+        return relativeAzimuth;
+    }
+ 
 }
