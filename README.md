@@ -5,7 +5,7 @@ Toto rozšírenie umožňuje komunikáciu cez I2C s kompasovými čipmi **HMC588
 ## Inštalácia
 1. Otvorte [MakeCode pre Micro:bit](https://makecode.microbit.org/).
 2. Prejdite do **Rozšírení** (`Extensions`).
-3. Do vyhľadávacieho poľa zadajte URL repozitára na GitHub-e, kde je toto rozšírenie uložené.
+3. Do vyhľadávacieho poľa zadajte URL repozitára na GitHub-e, kde je toto rozšírenie uložené: https://github.com/programatorovic/microbit_compass_i2c.git
 4. Pridajte rozšírenie do svojho projektu.
 
 ## Použitie
