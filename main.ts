@@ -49,7 +49,7 @@ namespace compass_i2c {
     }
 
     // Calculate Azimuth
-    //% block="Azimuth XY"
+    //% block="AzimuthXY"
     export function azimuth(): number {
         let x = getX();
         let y = getY();

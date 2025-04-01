@@ -1,6 +1,6 @@
 {
     "name": "Compass i2c",
-    "version": "0.2.4",
+    "version": "0.2.6",
     "description": "Extension for HMC5883L and QMC5883L compass modules using I2C",
     "dependencies": {
         "core": "*"
