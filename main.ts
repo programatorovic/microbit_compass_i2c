@@ -21,51 +21,6 @@ namespace compass_i2c {
         return 0;
     }
 
-// Calibrate QMC5883L
-    //% block="Calibrate QMC5883L"
-    export function calibrateQMC5883L(): void {
-        let xMin = 32767, xMax = -32768;
-        let yMin = 32767, yMax = -32768;
-        let zMin = 32767, zMax = -32768;
-        let coveredDots = [false, false, false, false, false];
-
-        basic.showString("CAL");
-
-        for (let i = 0; i < 1000; i++) {
-            let x = getX();
-            let y = getY();
-            let z = getZ();
-
-            if (x < xMin) xMin = x;
-            if (x > xMax) xMax = x;
-            if (y < yMin) yMin = y;
-            if (y > yMax) yMax = y;
-            if (z < zMin) zMin = z;
-            if (z > zMax) zMax = z;
-
-            // Display dots on the micro:bit screen
-            let displayPattern = i % 5;
-            basic.clearScreen();
-            for (let j = 0; j <= displayPattern; j++) {
-                led.plot(j, displayPattern - j);
-                coveredDots[displayPattern] = true;
-            }
-
-            // Check if all dots are covered
-            if (coveredDots.every(dot => dot)) {
-                break;
-            }
-
-            basic.pause(50); // Add a delay of 50 milliseconds
-        }
-
-        xOffset = (xMax + xMin) / 2;
-        yOffset = (yMax + yMin) / 2;
-        zOffset = (zMax + zMin) / 2;
-        basic.clearScreen();
-        basic.showString("DONE");
-    }
-
     // Get X value
     //% block="Get X"
     export function getX(): number {
@@ -94,16 +49,11 @@ namespace compass_i2c {
     }
 
     // Calculate Azimuth
-    //% block="Azimuth"
+    //% block="Azimuth XY"
     export function azimuth(): number {
         let x = getX();
         let y = getY();
-        let z = getZ();
-        let pitch = Math.atan2(-x, Math.sqrt(y * y + z * z));
-        let roll = Math.atan2(y, z);
-        let xh = x * Math.cos(pitch) + z * Math.sin(pitch);
-        let yh = y * Math.cos(roll) - z * Math.sin(roll);
-        let azimuth = Math.atan2(yh, xh) * (180 / Math.PI);
+        let azimuth = Math.atan2(y, x) * (180 / Math.PI);
         if (azimuth < 0) {
             azimuth += 360;
         }
